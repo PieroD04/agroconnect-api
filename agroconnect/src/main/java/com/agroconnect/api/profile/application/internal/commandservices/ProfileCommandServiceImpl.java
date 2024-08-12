@@ -44,7 +44,7 @@ public class ProfileCommandServiceImpl implements ProfileCommandService {
     public Optional<Profile> handle(UpdateProfileCommand command) {
         var profile = profileRepository.findById(command.id());
         if (profile.isEmpty()) {
-            throw new ProfileNotFoundException(command.id());
+            return Optional.empty();
         }
         var profileToUpdate = profile.get();
         Profile updatedProfile = profileRepository.save(profileToUpdate.update(command));

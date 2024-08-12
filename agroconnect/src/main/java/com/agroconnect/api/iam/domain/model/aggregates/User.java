@@ -2,6 +2,7 @@ package com.agroconnect.api.iam.domain.model.aggregates;
 
 import com.agroconnect.api.iam.domain.model.entities.Role;
 import com.agroconnect.api.profile.domain.model.aggregates.Profile;
+import com.agroconnect.api.profile.domain.model.entities.Notification;
 import com.agroconnect.api.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -10,6 +11,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,10 +42,8 @@ public class User extends AuditableAbstractAggregateRoot<User> {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
-    /* Pending
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Notification> notifications;
-    */
 
     public User() {
         this.roles = new HashSet<>();
@@ -52,7 +52,7 @@ public class User extends AuditableAbstractAggregateRoot<User> {
         this.username = username;
         this.password = password;
         this.roles = new HashSet<>();
-        //this.notifications = new ArrayList<>();
+        this.notifications = new ArrayList<>();
     }
 
     public User(String username, String password, List<Role> roles) {

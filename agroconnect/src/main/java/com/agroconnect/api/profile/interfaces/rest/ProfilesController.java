@@ -14,15 +14,11 @@ import com.agroconnect.api.profile.interfaces.rest.transform.CreateProfileComman
 import com.agroconnect.api.profile.interfaces.rest.transform.ProfileResourceFromEntityAssembler;
 import com.agroconnect.api.profile.interfaces.rest.transform.UpdateProfileCommandFromResourceAssembler;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpEntity;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
-import org.springframework.web.ErrorResponseException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -30,6 +26,8 @@ import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+@PreAuthorize("hasRole('USER')")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping(value="api/v1/profiles", produces = APPLICATION_JSON_VALUE)
 @Tag(name = "Profiles", description = "Profile Management Endpoints")
@@ -78,7 +76,7 @@ public class ProfilesController {
             return ResponseEntity.badRequest().build();
         }
         var profileResource = ProfileResourceFromEntityAssembler.toResourceFromEntity(profile.get());
-        return ResponseEntity.ok(profileResource);
+        return ResponseEntity.status(HttpStatus.CREATED).body(profileResource);
     }
 
     @PutMapping("/{id}")

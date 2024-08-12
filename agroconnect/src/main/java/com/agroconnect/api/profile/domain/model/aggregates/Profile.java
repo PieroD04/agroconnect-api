@@ -7,6 +7,7 @@ import com.agroconnect.api.shared.domain.model.aggregates.AuditableAbstractAggre
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -14,7 +15,6 @@ import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Getter
@@ -36,6 +36,7 @@ public class Profile extends AuditableAbstractAggregateRoot<Profile> {
     private String description;
     private String photo;
     private String occupation;
+    @Min(value = 0, message = "Experience must be greater than or equal to 0")
     private Integer experience;
 
     @OneToOne
