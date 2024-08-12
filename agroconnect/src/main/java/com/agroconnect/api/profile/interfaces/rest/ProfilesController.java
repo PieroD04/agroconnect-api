@@ -26,7 +26,7 @@ import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@PreAuthorize("hasRole('USER')")
+@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping(value="api/v1/profiles", produces = APPLICATION_JSON_VALUE)
@@ -76,7 +76,7 @@ public class ProfilesController {
             return ResponseEntity.badRequest().build();
         }
         var profileResource = ProfileResourceFromEntityAssembler.toResourceFromEntity(profile.get());
-        return ResponseEntity.status(HttpStatus.CREATED).body(profileResource);
+        return new ResponseEntity<>(profileResource, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

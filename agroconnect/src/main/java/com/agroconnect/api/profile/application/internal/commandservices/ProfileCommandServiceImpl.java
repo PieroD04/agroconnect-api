@@ -10,7 +10,6 @@ import com.agroconnect.api.profile.domain.model.commands.DeleteProfileCommand;
 import com.agroconnect.api.profile.domain.model.commands.UpdateProfileCommand;
 import com.agroconnect.api.profile.domain.services.ProfileCommandService;
 import com.agroconnect.api.profile.infrastructure.persistence.jpa.repositories.ProfileRepository;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

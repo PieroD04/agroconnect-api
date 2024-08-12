@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@PreAuthorize("hasRole('USER')")
+@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping(value="api/v1/advisors", produces = APPLICATION_JSON_VALUE)
@@ -72,7 +72,7 @@ public class AdvisorsController {
             return ResponseEntity.badRequest().build();
         }
         var advisorResource = AdvisorResourceFromEntityAssembler.toResourceFromEntity(advisor.get());
-        return ResponseEntity.status(HttpStatus.CREATED).body(advisorResource);
+        return new ResponseEntity<>(advisorResource, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

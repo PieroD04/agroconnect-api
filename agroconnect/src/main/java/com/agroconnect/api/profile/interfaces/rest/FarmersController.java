@@ -20,7 +20,7 @@ import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@PreAuthorize("hasRole('USER')")
+@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping(value="api/v1/farmers", produces = APPLICATION_JSON_VALUE)
@@ -70,7 +70,7 @@ public class FarmersController {
             return ResponseEntity.badRequest().build();
         }
         var farmerResource = FarmerResourceFromEntityAssembler.toResourceFromEntity(farmer.get());
-        return ResponseEntity.status(HttpStatus.CREATED).body(farmerResource);
+        return new ResponseEntity<>(farmerResource, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")

@@ -4,10 +4,7 @@ import com.agroconnect.api.profile.domain.model.aggregates.Profile;
 import com.agroconnect.api.profile.domain.model.entities.Advisor;
 import com.agroconnect.api.profile.domain.model.entities.Farmer;
 import com.agroconnect.api.profile.domain.model.entities.Notification;
-import com.agroconnect.api.profile.domain.model.queries.GetAdvisorByUserIdQuery;
-import com.agroconnect.api.profile.domain.model.queries.GetFarmerByUserIdQuery;
-import com.agroconnect.api.profile.domain.model.queries.GetNotificationsByUserIdQuery;
-import com.agroconnect.api.profile.domain.model.queries.GetProfileByUserIdQuery;
+import com.agroconnect.api.profile.domain.model.queries.*;
 import com.agroconnect.api.profile.domain.services.AdvisorQueryService;
 import com.agroconnect.api.profile.domain.services.FarmerQueryService;
 import com.agroconnect.api.profile.domain.services.NotificationQueryService;
@@ -41,9 +38,19 @@ public class ProfilesContextFacade {
         return farmerQueryService.handle(getFarmerByUserIdQuery);
     }
 
+    public Optional<Farmer> fetchFarmerById(Long farmerId) {
+        var getFarmerByIdQuery = new GetFarmerByIdQuery(farmerId);
+        return farmerQueryService.handle(getFarmerByIdQuery);
+    }
+
     public Optional<Advisor> fetchAdvisorByUserId(Long userId) {
         var getAdvisorByUserIdQuery = new GetAdvisorByUserIdQuery(userId);
         return advisorQueryService.handle(getAdvisorByUserIdQuery);
+    }
+
+    public Optional<Advisor> fetchAdvisorById(Long advisorId) {
+        var getAdvisorByIdQuery = new GetAdvisorByUserIdQuery(advisorId);
+        return advisorQueryService.handle(getAdvisorByIdQuery);
     }
 
     public List<Notification> fetchNotificationByUserId(Long userId) {

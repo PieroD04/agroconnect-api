@@ -2,7 +2,6 @@ package com.agroconnect.api.profile.application.internal.commandservices;
 
 import com.agroconnect.api.profile.application.internal.outboundservices.acl.ExternalUserService;
 import com.agroconnect.api.profile.domain.exceptions.AdvisorNotFoundException;
-import com.agroconnect.api.profile.domain.exceptions.ProfileNotFoundException;
 import com.agroconnect.api.profile.domain.exceptions.SameUserException;
 import com.agroconnect.api.profile.domain.exceptions.UserNotFoundException;
 import com.agroconnect.api.profile.domain.model.commands.CreateAdvisorCommand;

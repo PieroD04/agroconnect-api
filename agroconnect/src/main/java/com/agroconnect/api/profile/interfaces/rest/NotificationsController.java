@@ -20,7 +20,7 @@ import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@PreAuthorize("hasRole('USER')")
+@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping(value="api/v1/notifications", produces = APPLICATION_JSON_VALUE)
@@ -70,7 +70,7 @@ public class NotificationsController {
             return ResponseEntity.badRequest().build();
         }
         var notificationResource = NotificationResourceFromEntityAssembler.toResourceFromEntity(notification.get());
-        return ResponseEntity.status(HttpStatus.CREATED).body(notificationResource);
+        return new ResponseEntity<>(notificationResource, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
