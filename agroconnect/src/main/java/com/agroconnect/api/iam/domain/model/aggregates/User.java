@@ -1,6 +1,7 @@
 package com.agroconnect.api.iam.domain.model.aggregates;
 
 import com.agroconnect.api.iam.domain.model.entities.Role;
+import com.agroconnect.api.profile.domain.model.aggregates.Profile;
 import com.agroconnect.api.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -24,18 +25,18 @@ import java.util.Set;
 @Entity
 public class User extends AuditableAbstractAggregateRoot<User> {
 
-    @NotBlank
-    @Email
-    @Size(max = 50)
+    @NotBlank(message = "Username is required")
+    @Email(message = "Username must be an email")
+    @Size(max = 50, message = "Username must be less than 50 characters")
     @Column(unique = true)
     private String username;
 
-    @NotBlank
-    @Size(max = 120)
+    @NotBlank(message = "Password is required")
+    @Size(max = 120, message = "Password must be less than 120 characters")
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(	name = "user_roles",
+    @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
@@ -43,6 +44,7 @@ public class User extends AuditableAbstractAggregateRoot<User> {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Notification> notifications;
     */
+
     public User() {
         this.roles = new HashSet<>();
     }

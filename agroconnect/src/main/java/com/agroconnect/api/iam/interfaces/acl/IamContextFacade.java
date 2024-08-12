@@ -1,5 +1,6 @@
 package com.agroconnect.api.iam.interfaces.acl;
 
+import com.agroconnect.api.iam.domain.model.aggregates.User;
 import com.agroconnect.api.iam.domain.model.commands.SignUpCommand;
 import com.agroconnect.api.iam.domain.model.entities.Role;
 import com.agroconnect.api.iam.domain.model.queries.GetUserByIdQuery;
@@ -7,9 +8,11 @@ import com.agroconnect.api.iam.domain.model.queries.GetUserByUsernameQuery;
 import com.agroconnect.api.iam.domain.services.UserCommandService;
 import com.agroconnect.api.iam.domain.services.UserQueryService;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * IamContextFacade
@@ -20,6 +23,7 @@ import java.util.List;
  * </p>
  *
  */
+@Service
 public class IamContextFacade {
     private final UserCommandService userCommandService;
     private final UserQueryService userQueryService;
@@ -79,6 +83,15 @@ public class IamContextFacade {
         var result = userQueryService.handle(getUserByIdQuery);
         if (result.isEmpty()) return Strings.EMPTY;
         return result.get().getUsername();
+    }
+    /**
+     * Fetches the user with the given id.
+     * @param userId The id of the user.
+     * @return The user.
+     */
+    public Optional<User> fetchUserById(Long userId) {
+        var getUserByIdQuery = new GetUserByIdQuery(userId);
+        return userQueryService.handle(getUserByIdQuery);
     }
 
 }
