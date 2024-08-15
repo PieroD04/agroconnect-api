@@ -2,8 +2,7 @@ package com.agroconnect.api.profile.interfaces.rest.resources;
 
 import java.time.LocalDate;
 
-public record UpdateProfileResource(Long userId,
-                                    String firstName,
+public record UpdateProfileResource(String firstName,
                                     String lastName,
                                     String city,
                                     String country,
