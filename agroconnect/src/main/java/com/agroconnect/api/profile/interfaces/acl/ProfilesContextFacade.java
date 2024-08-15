@@ -1,14 +1,13 @@
 package com.agroconnect.api.profile.interfaces.acl;
 
 import com.agroconnect.api.profile.domain.model.aggregates.Profile;
+import com.agroconnect.api.profile.domain.model.commands.CreateNotificationCommand;
 import com.agroconnect.api.profile.domain.model.entities.Advisor;
 import com.agroconnect.api.profile.domain.model.entities.Farmer;
 import com.agroconnect.api.profile.domain.model.entities.Notification;
 import com.agroconnect.api.profile.domain.model.queries.*;
-import com.agroconnect.api.profile.domain.services.AdvisorQueryService;
-import com.agroconnect.api.profile.domain.services.FarmerQueryService;
-import com.agroconnect.api.profile.domain.services.NotificationQueryService;
-import com.agroconnect.api.profile.domain.services.ProfileQueryService;
+import com.agroconnect.api.profile.domain.services.*;
+import com.agroconnect.api.profile.interfaces.rest.resources.CreateNotificationResource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,22 +19,32 @@ public class ProfilesContextFacade {
     private final FarmerQueryService farmerQueryService;
     private final AdvisorQueryService advisorQueryService;
     private final NotificationQueryService notificationQueryService;
+    private final NotificationCommandService notificationCommandService;
 
-    public ProfilesContextFacade(ProfileQueryService profileQueryService, FarmerQueryService farmerQueryService, AdvisorQueryService advisorQueryService, NotificationQueryService notificationQueryService) {
+    public ProfilesContextFacade(ProfileQueryService profileQueryService, FarmerQueryService farmerQueryService, AdvisorQueryService advisorQueryService, NotificationQueryService notificationQueryService, NotificationCommandService notificationCommandService) {
         this.profileQueryService = profileQueryService;
         this.farmerQueryService = farmerQueryService;
         this.advisorQueryService = advisorQueryService;
         this.notificationQueryService = notificationQueryService;
+        this.notificationCommandService = notificationCommandService;
     }
 
-    public Optional<Profile> fetchProfileByUserId(Long userId) {
-        var getProfileByUserIdQuery = new GetProfileByUserIdQuery(userId);
-        return profileQueryService.handle(getProfileByUserIdQuery);
+    public Optional<Profile> fetchProfileByFarmerId(Long farmerId) {
+        var farmerProfileQuery = new GetFarmerByIdQuery(farmerId);
+        var farmer = farmerQueryService.handle(farmerProfileQuery);
+        if (farmer.isEmpty()) return Optional.empty();
+        Long userId = farmer.get().getUserId();
+        var profileQuery = new GetProfileByUserIdQuery(userId);
+        return profileQueryService.handle(profileQuery);
     }
 
-    public Optional<Farmer> fetchFarmerByUserId(Long userId) {
-        var getFarmerByUserIdQuery = new GetFarmerByUserIdQuery(userId);
-        return farmerQueryService.handle(getFarmerByUserIdQuery);
+    public Optional<Profile> fetchProfileByAdvisorId(Long advisorId) {
+        var advisorProfileQuery = new GetAdvisorByUserIdQuery(advisorId);
+        var advisor = advisorQueryService.handle(advisorProfileQuery);
+        if (advisor.isEmpty()) return Optional.empty();
+        Long userId = advisor.get().getUserId();
+        var profileQuery = new GetProfileByUserIdQuery(userId);
+        return profileQueryService.handle(profileQuery);
     }
 
     public Optional<Farmer> fetchFarmerById(Long farmerId) {
@@ -43,22 +52,15 @@ public class ProfilesContextFacade {
         return farmerQueryService.handle(getFarmerByIdQuery);
     }
 
-    public Optional<Advisor> fetchAdvisorByUserId(Long userId) {
-        var getAdvisorByUserIdQuery = new GetAdvisorByUserIdQuery(userId);
-        return advisorQueryService.handle(getAdvisorByUserIdQuery);
-    }
-
     public Optional<Advisor> fetchAdvisorById(Long advisorId) {
         var getAdvisorByIdQuery = new GetAdvisorByUserIdQuery(advisorId);
         return advisorQueryService.handle(getAdvisorByIdQuery);
     }
 
-    public List<Notification> fetchNotificationByUserId(Long userId) {
-        var getNotificationsByUserIdQuery = new GetNotificationsByUserIdQuery(userId);
-        return notificationQueryService.handle(getNotificationsByUserIdQuery);
+
+
+    public Long createNotification(CreateNotificationResource notification) {
+        return notificationCommandService.handle(new CreateNotificationCommand(notification.userId(), notification.title(), notification.message(), notification.sendAt(), notification.meetingUrl()));
     }
-
-
-
 
 }

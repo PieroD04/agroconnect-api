@@ -2,6 +2,7 @@ package com.agroconnect.api.appointment.interfaces.rest;
 
 import com.agroconnect.api.appointment.domain.model.aggregates.Appointment;
 import com.agroconnect.api.appointment.domain.model.commands.DeleteAppointmentCommand;
+import com.agroconnect.api.appointment.domain.model.events.CreateNotificationByAppointmentCreated;
 import com.agroconnect.api.appointment.domain.model.queries.GetAllAppointmentsQuery;
 import com.agroconnect.api.appointment.domain.model.queries.GetAppointmentByIdQuery;
 import com.agroconnect.api.appointment.domain.services.AppointmentCommandService;
@@ -13,6 +14,7 @@ import com.agroconnect.api.appointment.interfaces.rest.transform.AppointmentReso
 import com.agroconnect.api.appointment.interfaces.rest.transform.CreateAppointmentCommandFromResourceAssembler;
 import com.agroconnect.api.appointment.interfaces.rest.transform.UpdateAppointmentCommandFromResourceAssembler;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,10 +34,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class AppointmentsController {
     private final AppointmentCommandService appointmentCommandService;
     private final AppointmentQueryService appointmentQueryService;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public AppointmentsController(AppointmentCommandService appointmentCommandService, AppointmentQueryService appointmentQueryService) {
+    public AppointmentsController(AppointmentCommandService appointmentCommandService, AppointmentQueryService appointmentQueryService, ApplicationEventPublisher eventPublisher) {
         this.appointmentCommandService = appointmentCommandService;
         this.appointmentQueryService = appointmentQueryService;
+        this.eventPublisher = eventPublisher;
     }
 
     @GetMapping
@@ -70,6 +74,7 @@ public class AppointmentsController {
         var appointment = appointmentQueryService.handle(new GetAppointmentByIdQuery(appointmentId));
         if (appointment.isEmpty()) return ResponseEntity.badRequest().build();
         var appointmentResource = AppointmentResourceFromEntityAssembler.toResourceFromEntity(appointment.get());
+        eventPublisher.publishEvent(new CreateNotificationByAppointmentCreated(this, appointmentResource.farmerId(), appointmentResource.advisorId()));
         return new ResponseEntity<>(appointmentResource, HttpStatus.CREATED);
     }
 
