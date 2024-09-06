@@ -1,16 +1,14 @@
 package com.agroconnect.api.appointment.application.internal.commandservices;
 
-import com.agroconnect.api.appointment.domain.exceptions.AppointmentNotFoundException;
+import com.agroconnect.api.appointment.application.internal.outboundservices.acl.ExternalProfilesService;
+import com.agroconnect.api.appointment.domain.exceptions.AdvisorNotFoundException;
 import com.agroconnect.api.appointment.domain.exceptions.InvalidRatingException;
 import com.agroconnect.api.appointment.domain.exceptions.ReviewNotFoundException;
 import com.agroconnect.api.appointment.domain.model.commands.CreateReviewCommand;
 import com.agroconnect.api.appointment.domain.model.commands.DeleteReviewCommand;
 import com.agroconnect.api.appointment.domain.model.commands.UpdateReviewCommand;
 import com.agroconnect.api.appointment.domain.model.entities.Review;
-import com.agroconnect.api.appointment.domain.model.queries.GetAppointmentByIdQuery;
-import com.agroconnect.api.appointment.domain.services.AppointmentQueryService;
 import com.agroconnect.api.appointment.domain.services.ReviewCommandService;
-import com.agroconnect.api.appointment.infrastructure.persistence.jpa.repositories.AppointmentRepository;
 import com.agroconnect.api.appointment.infrastructure.persistence.jpa.repositories.ReviewRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,19 +17,19 @@ import java.util.Optional;
 @Service
 public class ReviewCommandServiceImpl implements ReviewCommandService {
     private final ReviewRepository reviewRepository;
-    private final AppointmentRepository appointmentRepository;
+    private final ExternalProfilesService externalProfilesService;
 
-    public ReviewCommandServiceImpl(ReviewRepository reviewRepository, AppointmentRepository appointmentRepository) {
+    public ReviewCommandServiceImpl(ReviewRepository reviewRepository, ExternalProfilesService externalProfilesService) {
         this.reviewRepository = reviewRepository;
-        this.appointmentRepository = appointmentRepository;
+        this.externalProfilesService = externalProfilesService;
     }
 
     @Override
     public Long handle(CreateReviewCommand command) {
-        var appointment = appointmentRepository.findById(command.appointmentId());
-        if (appointment.isEmpty()) throw new AppointmentNotFoundException(command.appointmentId());
+        var advisor = externalProfilesService.fetchAdvisorById(command.advisorId());
+        if (advisor.isEmpty()) throw new AdvisorNotFoundException(command.advisorId());
         if(command.rating() < 0 || command.rating() > 5) throw new InvalidRatingException(command.rating());
-        Review review = new Review(command, appointment.get());
+        Review review = new Review(command, advisor.get());
         reviewRepository.save(review);
         return review.getId();
     }

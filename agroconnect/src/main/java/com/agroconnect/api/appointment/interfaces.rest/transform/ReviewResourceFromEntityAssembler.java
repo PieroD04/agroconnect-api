@@ -7,7 +7,7 @@ public class ReviewResourceFromEntityAssembler {
     public static ReviewResource toResourceFromEntity(Review entity){
         return new ReviewResource(
                 entity.getId(),
-                entity.getAppointmentId(),
+                entity.getAdvisorId(),
                 entity.getComment(),
                 entity.getRating()
         );

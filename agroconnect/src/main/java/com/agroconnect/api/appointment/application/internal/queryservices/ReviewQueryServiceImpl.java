@@ -2,7 +2,7 @@ package com.agroconnect.api.appointment.application.internal.queryservices;
 
 import com.agroconnect.api.appointment.domain.model.entities.Review;
 import com.agroconnect.api.appointment.domain.model.queries.GetAllReviewsQuery;
-import com.agroconnect.api.appointment.domain.model.queries.GetReviewByAppointmentIdQuery;
+import com.agroconnect.api.appointment.domain.model.queries.GetReviewByAdvisorIdQuery;
 import com.agroconnect.api.appointment.domain.model.queries.GetReviewByIdQuery;
 import com.agroconnect.api.appointment.domain.services.ReviewQueryService;
 import com.agroconnect.api.appointment.infrastructure.persistence.jpa.repositories.ReviewRepository;
@@ -30,7 +30,7 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
     }
 
     @Override
-    public Optional<Review> handle(GetReviewByAppointmentIdQuery query) {
-        return reviewRepository.findByAppointment_Id(query.appointmentId());
+    public Optional<Review> handle(GetReviewByAdvisorIdQuery query) {
+        return reviewRepository.findByAdvisor_Id(query.advisorId());
     }
 }

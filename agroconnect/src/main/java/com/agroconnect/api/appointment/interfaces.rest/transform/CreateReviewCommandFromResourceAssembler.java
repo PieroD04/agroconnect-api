@@ -6,7 +6,7 @@ import com.agroconnect.api.appointment.interfaces.rest.resources.CreateReviewRes
 public class CreateReviewCommandFromResourceAssembler {
     public static CreateReviewCommand toCommandFromResource(CreateReviewResource resource){
         return new CreateReviewCommand(
-                resource.appointmentId(),
+                resource.advisorId(),
                 resource.comment(),
                 resource.rating()
         );
