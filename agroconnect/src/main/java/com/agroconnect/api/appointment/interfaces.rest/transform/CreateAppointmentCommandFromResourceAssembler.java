@@ -8,6 +8,7 @@ public class CreateAppointmentCommandFromResourceAssembler {
         return new CreateAppointmentCommand(
                 resource.advisorId(),
                 resource.farmerId(),
+                resource.message(),
                 resource.status(),
                 resource.scheduledDate(),
                 resource.startTime(),

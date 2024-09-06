@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public record CreateAppointmentCommand(Long advisorId,
                                        Long farmerId,
+                                       String message,
                                        String status,
                                        LocalDate scheduledDate,
                                        String startTime,

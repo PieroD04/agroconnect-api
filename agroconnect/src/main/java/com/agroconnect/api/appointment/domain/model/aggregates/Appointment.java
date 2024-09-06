@@ -17,6 +17,10 @@ import java.time.LocalDate;
 @Getter
 @Entity
 public class Appointment extends AuditableAbstractAggregateRoot<Appointment> {
+    @NotNull(message = "Message is required")
+    @Column(columnDefinition = "TEXT")
+    private String message;
+
     @NotNull(message = "Date is required")
     @FutureOrPresent(message = "Date must be in the future")
     private LocalDate scheduledDate;
@@ -48,6 +52,7 @@ public class Appointment extends AuditableAbstractAggregateRoot<Appointment> {
         this.scheduledDate = command.scheduledDate();
         this.startTime = command.startTime();
         this.endTime = command.endTime();
+        this.message = command.message();
         this.status = AppointmentStatus.valueOf(command.status().toUpperCase());
         this.farmer = farmer;
         this.advisor = advisor;
@@ -57,6 +62,7 @@ public class Appointment extends AuditableAbstractAggregateRoot<Appointment> {
         this.scheduledDate = command.scheduledDate();
         this.startTime = command.startTime();
         this.endTime = command.endTime();
+        this.message = command.message();
         this.status = AppointmentStatus.valueOf(command.status().toUpperCase());
         return this;
     }

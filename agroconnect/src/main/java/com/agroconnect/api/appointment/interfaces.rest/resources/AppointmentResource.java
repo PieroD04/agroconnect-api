@@ -5,6 +5,7 @@ import java.time.LocalDate;
 public record AppointmentResource(Long id,
                                   Long advisorId,
                                   Long farmerId,
+                                  String message,
                                   String status,
                                   LocalDate scheduledDate,
                                   String startTime,

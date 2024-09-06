@@ -9,6 +9,7 @@ public class AppointmentResourceFromEntityAssembler {
                 entity.getId(),
                 entity.getAdvisorId(),
                 entity.getFarmerId(),
+                entity.getMessage(),
                 entity.getAppointmentStatus(),
                 entity.getScheduledDate(),
                 entity.getStartTime(),
